@@ -26,10 +26,19 @@ Task.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+
+    board_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "board",
+        key: "id",
+      },
+    },
   },
   {
     sequelize,
-    timestaps: true,
+    timestamps: true,
     underscored: true,
     freezeTableName: true,
     modelName: "task",

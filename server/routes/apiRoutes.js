@@ -1,4 +1,5 @@
-const Task = require("../models/Task");
+const { Board } = require("../models");
+const { Task } = require("../models");
 const router = require("express").Router();
 
 // Get all tasks
@@ -6,11 +7,27 @@ router.get("/kanban-board-full-stack/api/tasks", async (req, res) => {
   await Task.findAll()
     .then((taskData) => {
       // retreiving data from model
-      console.log(taskData);
       res.json(taskData);
     })
     .catch((err) => {
       res.json(err);
+    });
+});
+
+router.get("/kanban-board-full-stack/api/boards", async (req, res) => {
+  await Board.findAll({
+    include: [
+      {
+        model: Task,
+      },
+    ],
+  })
+    .then((boardData) => {
+      console.log(boardData);
+      res.json(boardData);
+    })
+    .catch((error) => {
+      res.json(error);
     });
 });
 
