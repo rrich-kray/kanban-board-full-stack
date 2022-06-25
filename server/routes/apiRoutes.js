@@ -33,6 +33,7 @@ router.get("/kanban-board-full-stack/api/boards", async (req, res) => {
 
 // Create a task
 router.post("/kanban-board-full-stack/api/tasks", async (req, res) => {
+  console.log(req.body);
   await Task.create(req.body)
     .then((response) => {
       res.json(response);
@@ -70,7 +71,6 @@ router.put("/kanban-board-full-stack/api/tasks", async (req, res) => {
 
 // Delete a task
 router.delete("/kanban-board-full-stack/api/tasks", async (req, res) => {
-  console.log(req.body.task_id);
   await Task.destroy({
     where: {
       id: req.body.task_id,
