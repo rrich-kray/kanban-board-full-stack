@@ -42,6 +42,17 @@ router.post("/kanban-board-full-stack/api/tasks", async (req, res) => {
     });
 });
 
+// Create a board
+router.post("/kanban-board-full-stack/api/boards", async (req, res) => {
+  await Board.create(req.body)
+    .then((response) => {
+      res.json(response);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
 // Update a task
 router.put("/kanban-board-full-stack/api/tasks", async (req, res) => {
   await Task.update(req.body, {
