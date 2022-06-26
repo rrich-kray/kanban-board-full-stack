@@ -84,4 +84,18 @@ router.delete("/kanban-board-full-stack/api/tasks", async (req, res) => {
     });
 });
 
+router.delete("/kanban-board-full-stack/api/boards", async (req, res) => {
+  Board.destroy({
+    where: {
+      id: req.body.id,
+    },
+  })
+    .then((boardData) => {
+      res.json(boardData);
+    })
+    .catch((err) => {
+      res.json(err);
+    });
+});
+
 module.exports = router;
