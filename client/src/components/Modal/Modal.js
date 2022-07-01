@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./Modal.css";
 
-const Modal = ({ boardData, activeBoardIndex, changeActiveBoardIndex }) => {
+const Modal = ({
+  boardData,
+  baseUrl,
+  activeBoardIndex,
+  changeActiveBoardIndex,
+}) => {
   const [formState, setFormState] = useState({
     title: "",
     description: "",
@@ -20,7 +25,7 @@ const Modal = ({ boardData, activeBoardIndex, changeActiveBoardIndex }) => {
   };
 
   const handleTaskSubmit = (e) => {
-    fetch("http://localhost:3001/kanban-board-full-stack/api/tasks", {
+    fetch(`${baseUrl}/kanban-board-full-stack/api/tasks`, {
       method: "POST",
       headers: {
         Accept: "application/json, text/plain, */*",

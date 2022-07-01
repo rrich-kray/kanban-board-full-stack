@@ -43,6 +43,7 @@ function App() {
         <div className="app">
           {isModalVisible && (
             <Modal
+              baseUrl={baseUrl}
               boardData={boardData}
               activeBoardIndex={activeBoardIndex}
               changeActiveBoardIndex={changeActiveBoardIndex}
