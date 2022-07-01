@@ -4,10 +4,11 @@ import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "./Task.css";
 
-const Task = ({ task }) => {
+const Task = ({ task, baseUrl }) => {
+  console.log(baseUrl);
   const deleteTask = (taskId) => {
     // e.preventDefault();
-    fetch("http://localhost:3001/kanban-board-full-stack/api/tasks", {
+    fetch(`${baseUrl}/kanban-board-full-stack/api/tasks`, {
       method: "DELETE",
       headers: {
         Accept: "application/json, text/plain, */*",
@@ -47,7 +48,7 @@ const Task = ({ task }) => {
         newTaskProgress = task.progress -= 1;
       }
     }
-    fetch("http://localhost:3001/kanban-board-full-stack/api/tasks", {
+    fetch(`${baseUrl}/kanban-board-full-stack/api/tasks`, {
       method: "PUT",
       headers: {
         Accept: "application/json, text/plain, */*",
@@ -59,7 +60,7 @@ const Task = ({ task }) => {
   };
 
   return (
-    <li className="task" key={task.title}>
+    <li className="task" key={task.id}>
       <div className="task-name">{task.title}</div>
       <div
         className="delete-icon"

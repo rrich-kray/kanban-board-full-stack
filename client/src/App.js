@@ -10,8 +10,13 @@ function App() {
   const [activeBoardIndex, changeActiveBoardIndex] = useState(1);
   const [isModalVisible, changeModalVisibility] = useState(false);
 
+  const baseUrl =
+    process.env.NODE_ENV === "production"
+      ? "https://kanban-board-full-stack.herokuapp.com"
+      : "http://localhost:3001";
+
   useEffect(() => {
-    fetch("http://localhost:3001/kanban-board-full-stack/api/boards", {
+    fetch(`${baseUrl}/kanban-board-full-stack/api/boards`, {
       method: "GET",
       headers: {
         Accept: "application/json, text/plain, */*",
@@ -45,6 +50,7 @@ function App() {
           )}
           <div className="sidebar-container">
             <Sidebar
+              baseUrl={baseUrl}
               boardData={boardData}
               changeActiveBoardIndex={changeActiveBoardIndex}
             />
@@ -56,6 +62,7 @@ function App() {
               changeModalVisibility={changeModalVisibility}
             />
             <Board
+              baseUrl={baseUrl}
               boardData={boardData.filter(
                 (board) => board.id === activeBoardIndex
               )}

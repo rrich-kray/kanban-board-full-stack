@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "./Sidebar.css";
 
-const Sidebar = ({ changeActiveBoardIndex, boardData }) => {
+const Sidebar = ({ changeActiveBoardIndex, boardData, baseUrl }) => {
   const [allBoards, setAllBoards] = useState();
   const [isFormActive, activateForm] = useState();
   const [formState, setFormState] = useState({
@@ -18,7 +18,7 @@ const Sidebar = ({ changeActiveBoardIndex, boardData }) => {
   };
 
   const createBoard = () => {
-    fetch("http://localhost:3001/kanban-board-full-stack/api/boards", {
+    fetch(`${baseUrl}/kanban-board-full-stack/api/boards`, {
       method: "POST",
       headers: {
         Accept: "application/json, text/plain, */*",
@@ -41,7 +41,7 @@ const Sidebar = ({ changeActiveBoardIndex, boardData }) => {
   };
 
   const deleteBoard = (boardId) => {
-    fetch("http://localhost:3001/kanban-board-full-stack/api/boards", {
+    fetch(`${baseUrl}/kanban-board-full-stack/api/boards`, {
       method: "DELETE",
       headers: {
         Accept: "application/json, text/plain, */*",
@@ -83,6 +83,7 @@ const Sidebar = ({ changeActiveBoardIndex, boardData }) => {
           boardData.map((board) => (
             <div
               className="board-name-logo"
+              key={board.id}
               onClick={() => changeActiveBoardIndex(board.id)}
             >
               <img
