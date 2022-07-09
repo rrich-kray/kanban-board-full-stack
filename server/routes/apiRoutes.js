@@ -1,5 +1,5 @@
-const { Board } = require("../models");
-const { Task } = require("../models");
+const { Board } = require("../models/index");
+const { Task } = require("../models/index");
 const router = require("express").Router();
 
 // Get all tasks
@@ -14,6 +14,7 @@ router.get("/kanban-board-full-stack/api/tasks", async (req, res) => {
     });
 });
 
+// Get boards
 router.get("/kanban-board-full-stack/api/boards", async (req, res) => {
   await Board.findAll({
     include: [
@@ -84,7 +85,14 @@ router.delete("/kanban-board-full-stack/api/tasks", async (req, res) => {
     });
 });
 
+// Delete a board
 router.delete("/kanban-board-full-stack/api/boards", async (req, res) => {
+  Task.destroy({
+    where: {
+      board_id: req.body.id,
+    },
+  });
+
   Board.destroy({
     where: {
       id: req.body.id,
