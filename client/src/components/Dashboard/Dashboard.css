@@ -1,1 +1,4 @@
-import React from 'react'
+.dashboard {
+	height: 100%;
+	width: 100%;
+}
