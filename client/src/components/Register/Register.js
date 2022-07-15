@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import './Register.css';
 
-const Register = ({ baseUrl }) => {
+const Register = () => {
 	const [formState, setFormState] = useState({
 		firstName: '',
 		lastName: '',
@@ -14,8 +14,16 @@ const Register = ({ baseUrl }) => {
 	console.log(formState);
 
 	const { register, currentUser } = useAuth();
-
 	console.log(currentUser);
+
+	const handleFormSubmit = async (firstName, lastName, email, password, url) => {
+		// e.preventDefault();
+		const authSuccess = await register(firstName, lastName, email, password, url);
+		if (authSuccess) {
+			console.log('Registration completed successfully.');
+		}
+	};
+
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		return setFormState({
@@ -46,12 +54,12 @@ const Register = ({ baseUrl }) => {
 				<button
 					className="register-btn"
 					onClick={() =>
-						register(
+						handleFormSubmit(
 							formState.firstName,
 							formState.lastName,
 							formState.email,
 							formState.password,
-							`${baseUrl}/kanban-board-full-stack/api/register`
+							`http://localhost:3001/kanban-board-full-stack/api/register`
 						)
 					}
 				>

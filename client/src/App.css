@@ -1,27 +1,9 @@
 .app {
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  position: relative;
-  overflow: hidden; 
-  background: rgb(12, 11, 11);
-  overflow: hidden;
-  /* background: rgba(138, 210, 237, 0.25) */
-}
-
-.sidebar-container {
-  flex: 1;
-  min-width: 300px
-}
-
-.board-container {
-  flex: 6
-}
-
-@media screen and (max-width: 768px) {
-  .app {
-    display: flex;
-    flex-direction: column;
-    overflow-y: scroll;
-  }
+	height: 100vh;
+	width: 100vw;
+	display: flex;
+	position: relative;
+	overflow: hidden;
+	background: rgb(12, 11, 11);
+	/* background: rgba(138, 210, 237, 0.25) */
 }

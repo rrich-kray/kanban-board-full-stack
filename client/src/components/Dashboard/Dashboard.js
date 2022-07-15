@@ -3,6 +3,7 @@ import Modal from '../Modal/Modal';
 import Sidebar from '../Sidebar/Sidebar';
 import Nav from '../Nav/Nav';
 import Board from '../Board/Board';
+import './Dashboard.css';
 
 const Dashboard = ({
 	baseUrl,

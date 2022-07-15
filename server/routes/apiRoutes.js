@@ -7,7 +7,7 @@ const secret = process.env.SECRET;
 
 // Get all tasks
 router.get('/kanban-board-full-stack/api/tasks', async (req, res) => {
-	await Task.findAll()
+	Task.findAll()
 		.then((taskData) => {
 			// retreiving data from model
 			res.json(taskData);
@@ -18,10 +18,10 @@ router.get('/kanban-board-full-stack/api/tasks', async (req, res) => {
 });
 
 // Get boards by user
-router.get('/kanban-board-full-stack/api/user', async (req, res) => {
-	await Board.findAll({
+router.get('/kanban-board-full-stack/api/boards/:userId', async (req, res) => {
+	Board.findAll({
 		where: {
-			user_id: req.body.id,
+			user_id: req.params.userId,
 		},
 		include: [
 			{
@@ -39,7 +39,7 @@ router.get('/kanban-board-full-stack/api/user', async (req, res) => {
 
 // Get boards
 router.get('/kanban-board-full-stack/api/boards', async (req, res) => {
-	await Board.findAll({
+	Board.findAll({
 		include: [
 			{
 				model: Task,
@@ -58,7 +58,7 @@ router.get('/kanban-board-full-stack/api/boards', async (req, res) => {
 // Create a task
 router.post('/kanban-board-full-stack/api/tasks', async (req, res) => {
 	console.log(req.body);
-	await Task.create(req.body)
+	Task.create(req.body)
 		.then((response) => {
 			res.json(response);
 		})
@@ -69,7 +69,7 @@ router.post('/kanban-board-full-stack/api/tasks', async (req, res) => {
 
 // Create a board
 router.post('/kanban-board-full-stack/api/boards', async (req, res) => {
-	await Board.create(req.body)
+	Board.create(req.body)
 		.then((response) => {
 			res.json(response);
 		})
@@ -80,7 +80,7 @@ router.post('/kanban-board-full-stack/api/boards', async (req, res) => {
 
 // Update a task
 router.put('/kanban-board-full-stack/api/tasks', async (req, res) => {
-	await Task.update(req.body, {
+	Task.update(req.body, {
 		where: {
 			id: req.body.task_id,
 		},
@@ -95,7 +95,7 @@ router.put('/kanban-board-full-stack/api/tasks', async (req, res) => {
 
 // Delete a task
 router.delete('/kanban-board-full-stack/api/tasks', async (req, res) => {
-	await Task.destroy({
+	Task.destroy({
 		where: {
 			id: req.body.task_id,
 		},
@@ -110,7 +110,7 @@ router.delete('/kanban-board-full-stack/api/tasks', async (req, res) => {
 
 // Delete a board
 router.delete('/kanban-board-full-stack/api/boards', async (req, res) => {
-	await Task.destroy({
+	Task.destroy({
 		where: {
 			board_id: req.body.id,
 		},
@@ -130,22 +130,18 @@ router.delete('/kanban-board-full-stack/api/boards', async (req, res) => {
 });
 
 // Register
-router.post('/kanban-board-full-stack/register', async (req, res) => {
-	if (
-		User.findOne({
-			where: {
-				email: req.body.email,
-			},
-		})
-	) {
-		res.json(
-			'A user is already registered with that email address. Please choose another.'
-		);
-	}
-	await User.create(req.body)
+router.post('/kanban-board-full-stack/api/register', async (req, res) => {
+	User.create(req.body)
 		.then((userData) => {
 			const token = jwt.sign(
-				{ data: [userData.email, userData.password] },
+				{
+					data: [
+						userData.firstName,
+						userData.lastName,
+						userData.email,
+						userData.password,
+					],
+				},
 				secret,
 				{ expiresIn: '2h' }
 			);
@@ -156,7 +152,7 @@ router.post('/kanban-board-full-stack/register', async (req, res) => {
 
 // Login
 router.post('/kanban-board-full-stack/login', async (req, res) => {
-	await User.findOne({
+	User.findOne({
 		where: {
 			id: req.body.id,
 			password: req.body.password,
