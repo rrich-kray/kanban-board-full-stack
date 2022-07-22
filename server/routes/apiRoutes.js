@@ -131,7 +131,7 @@ router.delete('/kanban-board-full-stack/api/boards', async (req, res) => {
 
 // Register
 router.post('/kanban-board-full-stack/api/register', async (req, res) => {
-	User.create(req.body)
+	User.create(req.body) // This will be formState object.
 		.then((userData) => {
 			const token = jwt.sign(
 				{
@@ -145,7 +145,10 @@ router.post('/kanban-board-full-stack/api/register', async (req, res) => {
 				secret,
 				{ expiresIn: '2h' }
 			);
-			res.json([userData, token]);
+			res.json({
+				user: userData,
+				token: token
+			});
 		})
 		.catch((err) => res.json(err));
 });
@@ -159,7 +162,20 @@ router.post('/kanban-board-full-stack/login', async (req, res) => {
 		},
 	})
 		.then((userData) => {
-			res.json(userData);
+			const token = jwt.sign(
+				{
+					data: [
+						userData.email,
+						userData.password
+					]
+				},
+				secret,
+				{expiresIn: '2h'}
+			)
+			res.json({
+				user: userData,
+				token: token
+			});
 		})
 		.catch((err) => {
 			res.json(err);

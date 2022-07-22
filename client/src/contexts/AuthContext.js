@@ -1,69 +1,76 @@
-import React, { useState, useEffect, useContext, createContext } from 'react';
-import jwt_decode from 'jwt-decode';
-import axios from 'axios';
+import React, { useReducer, createContext, useContext } from 'react';
+import decode from 'jwt-decode';
 
-const AuthContext = React.createContext();
+// Declare initial state
+// Declare initial context
+// Declare reducer function
+// Create state and dispatch using initial state and reducer function.
+// Create login and logout functions, which uses dispatch functions to update state
+// Pass user state, login and logout functions through AuthProvider as props
 
-export const useAuth = () => {
-	return useContext(AuthContext);
+const initialState = {
+  user: null,
 };
 
-export const AuthProvider = ({ children }) => {
-	const [currentUser, setCurrentUser] = useState();
-	const [loading, setLoading] = useState(false);
+if (localStorage.getItem('token')) {
+  const decodedToken = decode(localStorage.getItem('token'));
 
-	const register = async (firstName, lastName, email, password, url) => {
-		try {
-			await axios
-				.post(url, {
-					firstName: firstName,
-					lastName: lastName,
-					email: email,
-					password: password,
-				})
-				.then((userData) => {
-					localStorage.setItem('sid', JSON.stringify(userData.data[1]));
-					// setCurrentUser(userData.data); // This is queued and doesn't occur until the other components are loaded, at which point the currentUser value is still undefined
-				});
-		} catch (e) {
-			console.log(e);
-		}
-	};
+  if (decodedToken.exp * 1000 < Date.now()) {
+    localStorage.removeItem('token');
+  } else {
+    initialState.user = decodedToken;
+  }
+}
 
-	const login = async (email, password, url) => {
-		await axios
-			.post(url, {
-				email: email,
-				password: password,
-			})
-			.then((userData) => {
-				localStorage.setItem('sid', JSON.stringify(userData.data[1]));
-				// setCurrentUser(userData);
-			});
-	};
-	/* 
-	When you call the authSetter(true);, the state update is queued and once the then callback completes it goes to the next then in the chain which has your authGetter(). Now the state update does not happen immediately as I explained, it is queued. So when the last then callback is executed the state update which is queued has not happened and you still see false which is the old value.
-	*/
+const AuthContext = createContext({
+  user: null,
+  login: (userData) => {},
+  logout: () => {},
+});
 
-	const logout = () => {
-		localStorage.removeItem('sid');
-		setCurrentUser();
-		window.location.replace('/register');
-	};
-
-	useEffect(() => {
-		const token = JSON.parse(localStorage.getItem('sid'));
-		if (token) {
-			setCurrentUser(jwt_decode(token));
-		}
-	}, []);
-
-	const value = {
-		currentUser,
-		login,
-		logout,
-		register,
-	};
-
-	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+const useAuth = () => {
+  return useContext(AuthContext);
 };
+
+function authReducer(state, action) {
+  switch (action.type) {
+    case 'LOGIN':
+      return {
+        ...state,
+        user: action.payload,
+      };
+    case 'LOGOUT':
+      return {
+        ...state,
+        user: action.payload,
+      };
+    default:
+      return state;
+  }
+}
+
+function AuthProvider({ children }) {
+  const [state, dispatch] = useReducer(authReducer, initialState);
+
+  const login = (userData) => {
+    localStorage.setItem('token', userData.token);
+    dispatch({
+      type: 'LOGIN',
+      payload: userData,
+    });
+
+    const logout = () => {
+      localStorage.removeItem('token');
+      dispatch({ type: 'LOGOUT' });
+      window.location.replace('/');
+    };
+
+    return (
+      <AuthContext.Provider value={{ user: state.user, login, logout }}>
+        {children}
+      </AuthContext.Provider>
+    );
+  };
+}
+
+export { AuthContext, AuthProvider, useAuth };
